@@ -1,0 +1,3 @@
+10.40.40.10     root    loongson
+10.20.42.41     root    loongson
+10.40.41.165    root    loongson

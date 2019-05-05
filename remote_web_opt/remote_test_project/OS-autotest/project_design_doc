@@ -1,0 +1,84 @@
+本文是项目介绍
+前提摘要：
+适用场景是：每台机器(服务器)都与一个调试器相连接，
+每个调试器上的指定目录均含有要执行的开机关机等脚本，
+通过远程连接调试器，并执行调试器上的脚本，可以控制目标机器的开关机操作
+功能实现：
+
+1.远程控制调试器执行脚本使目标服务器关机
+  脚本:Test-Remote-poweroff-bat.sh
+  功能:远程连接调试器使其配对服务器关机
+
+2.远程控制调试器执行脚本使目标服务器开机
+  脚本:Test-Remote-poweron-bat.sh
+  功能:远程连接调试器使其配对服务器开机
+
+3.远程服务器开机后执行命令
+  脚本:Test-Remote-cmd-bat.sh
+  功能:远程服务器开机后执行命令
+
+相关使用功能：
+1.远程机器状态的检测
+  脚本:get_IPStates_Pairs.sh
+  功能：获取调试器和与之配对的服务器的所有ip列表与状态
+
+2.远程机器在线状态的检测
+  脚本: get_IPStates_Pairs_Active.sh
+  功能：获取调试器和与之配对的服务器的均在线所有的ip列表与状态
+
+3.远程调试机器状态的检测
+  脚本: getDebugerStates.sh
+  功能：获取调试器在线状态的ip列表
+
+4.远程服务器状态的检测
+  脚本: getDebugerStates.sh
+  功能：获取服务器在线状态的ip列表
+
+执行流程框架
+
+[*]首先可以先查看所有调试器及其配对服务器的ip列表信息
+  执行脚本: get_IPStates_Pairs.sh
+  生成文件: ip_pairs_all_stat.txt
+
+1.远程关机
+  1.1 远程连接测试
+      执行脚本:get_IPStates_Pairs_Active.sh
+      生成文件:ip_pairs_active.list
+  1.2 远程关机
+      执行脚本:Test-Remote-poweroff-bat.sh
+      执行结果:显示出已关机的调试器列表
+  1.3 远程ping测试 //关机验证...
+      执行脚本:get_IPStates_Pairs.sh //需要改造结果，要验证的是关机，原来的success,failed修改为开机，关机
+2.1.远程开机
+  2.1 远程连接测试(调试器是否开机)
+      执行脚本:get_IPStates_Pairs_Active.sh
+      生成文件:ip_pairs_active.list
+  2.2 远程开机
+      执行脚本:Test-Remote-poweron-bat.sh
+      执行结果:显示出在线服务器列表
+
+  2.3 远程连接测试-->验证远程开机命令后的结果
+      执行脚本:get_IPStates_Pairs_Active.sh
+      生成文件:ip_pairs_active.list
+
+3.远程ejtag调试窗口打开
+  3.1 远程连接测试
+      执行脚本:get_IPStates_Pairs_Active.sh
+      生成文件:ip_pairs_active.list
+  3.2 远程ejtag调试窗口打开
+      执行脚本:Test-Remote-ejtag-param.sh
+      执行结果:远程执行ejtag脚本后，就会进入ejtag的调试窗口，否则会报错
+
+4.远程服务器测试
+  远程开机测收，远程服务器即可进行测试命令或脚本
+  4.1 远程执行命令:
+      执行脚本:Test-Server-cmd-bat.sh
+      生成文件:ip_server_cmd_test_result.file
+               ip_server_cmd_test_ok.file
+               ip_server_cmd_test_error.file
+  4.2 远程执行脚本
+      执行脚本:Test-Server-scenario-bat.sh
+      执行结果:ip_server_scenario_test_result.file
+               ip_server_scenario_test_ok.file
+               ip_server_scenario_test_error.file
+
